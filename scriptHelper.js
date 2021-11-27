@@ -1,84 +1,98 @@
 // Write your helper functions here!
+
 require('isomorphic-fetch');
 
 function addDestinationInfo(document, name, diameter, star, distance, moons, imageUrl) {
-    let result = `
-    <h2>Mission Destination</h2>
-    <ol>
-        <li>Name: ${name}</li>
-        <li>Diameter: ${diameter}</li>
-        <li>Star: ${star}</li>
-        <li>Distance from Earth: ${distance}</li>
-        <li>Number of Moons: ${moons}</li>
-    </ol>
-    <img src="${imageUrl}">`;
-
-    return result;
-   // Here is the HTML formatting for our mission target div.
-   /*
+   let div = document.getElementById("missionTarget");
+   div.innerHTML = `
                 <h2>Mission Destination</h2>
                 <ol>
-                    <li>Name: </li>
-                    <li>Diameter: </li>
+                    <li>Name: ${name}</li>
+                    <li>Diameter: ${diameter}</li>
                     <li>Star: ${star}</li>
-                    <li>Distance from Earth: </li>
-                    <li>Number of Moons: </li>
+                    <li>Distance from Earth: ${distance}</li>
+                    <li>Number of Moons: ${moons}</li>
                 </ol>
-                <img src="">
-   */
+                <img src="${imageUrl}">
+                `;
 }
 
 function validateInput(testInput) {
-    let result = "";
-
-    if (testInput === null || testInput === "" ) {
-        result = "Empty";
-    } else if (isNaN(testInput)) {
-        result = "Not a Number";
-    } else {
-        result = "Is a Number";
-    }
-
-    return result;
+   let numberInput = Number(testInput);
+   if (testInput === "")
+   {
+       return "Empty";
+   }
+   else if (isNaN(numberInput))
+   {
+       return "Not a Number";
+   }
+   else if (isNaN(numberInput) === false)
+   {
+       return "Is a Number";
+   }
 }
+//       expect(studentFunctions.validateInput("")).toEqual("Empty");
+// expect(studentFunctions.validateInput("asdf")).toEqual("Not a Number");
+// expect(studentFunctions.validateInput("10")).toEqual("Is a Number");
 
 function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
-    // The list of shuttle requirements, the div with the id faultyItems, should be updated if something is not ready for launch. Using template literals, update the li elements pilotStatus and copilotStatus to include the pilot's name and the co-pilot's name.
+   let fuel = document.getElementById("fuelStatus");
+   let cargo = document.getElementById("cargoStatus");
+   let pilotStatus = document.getElementById("pilotStatus");
+   let copilotStatus = document.getElementById("copilotStatus");
 
-    // If the user submits a fuel level that is too low (less than 10,000 liters), change faultyItems to visible with an updated fuel status stating that there is not enough fuel for the journey. The text of the h2 element, launchStatus, should also change to "Shuttle not ready for launch" and the color should change to red.
-    
-    // If the user submits a cargo mass that is too large (more than 10,000 kilograms), change the list to visible with an updated cargo status stating that there is too much mass for the shuttle to take off. The text of launchStatus should also change to "Shuttle not ready for launch" and the color should change to red.
-    
-    // If the shuttle is ready to launch, change the text of launchStatus to green and display "Shuttle is ready for launch".
-   
+   if (validateInput(pilot) === "Empty" || validateInput(copilot) === "Empty" || validateInput(fuelLevel) === "Empty" || validateInput(cargoLevel) === "Empty") {
+       alert("All fields are required!");
+   } else if (validateInput(pilot) === "Is a Number" || validateInput(copilot) === "Is a Number" || validateInput(fuelLevel) === "Not a Number" || validateInput(cargoLevel) === "Not a Number" ) {
+       alert("Make sure to enter valid information for each field!");
+   } else {
+       list.style.visibility = "visible";
+       pilotStatus.innerHTML = `Pilot ${pilot} is ready for launch`;
+       copilotStatus.innerHTML = `Co-pilot ${copilot} is ready for launch`;
+       let launchStatus = document.getElementById("launchStatus");
+       if (fuelLevel < 10000 && cargoLevel <= 10000) {
+           fuel.innerHTML = "Fuel level too low for launch";
+           cargo.innerHTML = "Cargo mass low enough for launch"
+           launchStatus.innerHTML = "Shuttle Not Ready for Launch";
+           launchStatus.style.color = "#C7254E";
+       } else if (fuelLevel >= 10000 && cargoLevel > 10000) {
+           fuel.innerHTML = "Fuel level high enough for launch"
+           cargo.innerHTML = "Cargo mass too heavy for launch";
+           launchStatus.innerHTML = "Shuttle Not Ready for Launch";
+           launchStatus.style.color = "#C7254E";
+       } else if (fuelLevel < 10000 && cargoLevel > 10000) {
+           fuel.innerHTML = "Fuel level too low for launch";
+           cargo.innerHTML = "Cargo mass too heavy for launch";
+           launchStatus.innerHTML = "Shuttle Not Ready for Launch";
+           launchStatus.style.color = "#C7254E";
+       } else {
+           fuel.innerHTML = "Fuel level high enough for launch"
+           cargo.innerHTML = "Cargo mass low enough for launch"
+           launchStatus.innerHTML = "Shuttle is Ready for Launch";
+           launchStatus.style.color = "#419F6A";
+       }
+   }
 }
-
-    // In scriptHelper.js, you have three functions for this task: myFetch(), pickPlanet(), and addDestinationInfo(). First, review the comments in addDestinationInfo(). This is the format of the innerHTML for the missionTarget div, which you can locate using the document parameter of addDestinationInfo(). addDestinationInfo() does not need to return anything. pickPlanet() takes in one argument: a list of planets. Using Math.random(), return one planet from the list with a randomly-selected index. myFetch() has some of the code necessary for fetching planetary JSON, however, it is not complete. You need to add the URL and return response.json().
-
-    // Now it is time to make use of these helper functions in script.js. We provided some of the code necessary:
-    
-    // let listedPlanets;
-    // // Set listedPlanetsResponse equal to the value returned by calling myFetch()
-    // let listedPlanetsResponse;
-    // listedPlanetsResponse.then(function (result) {
-    //     listedPlanets = result;
-    //     console.log(listedPlanets);
-    // }).then(function () {
-    //     console.log(listedPlanets);
-    //     // Below this comment call the appropriate helper functions to pick a planet fom the list of planets and add that information to your destination.
-    // })
-    // First, do as the comments in the code tell you and set listedPlanetsResponse equal to the value returned when calling myFetch(). This value is going to be a promise. If we head to our browser and open up our developer tools, we can now see a list of the planets. Then using pickPlanet() and addDestinationInfo(), select a planet at random from listedPlanets and pass that information to addDestinationInfo(). Reload your page and check out your site to see the mission target information.
 
 async function myFetch() {
     let planetsReturned;
 
-    planetsReturned = await fetch().then( function(response) {
+    planetsReturned = await fetch("https://handlers.education.launchcode.org/static/planets.json").then( function(response) {
+            if (response.status >= 400) {
+                throw new Error ("Bad response");
+            }
+            else {
+                return response.json();
+            }
         });
 
     return planetsReturned;
 }
 
 function pickPlanet(planets) {
+    let index = Math.floor(Math.random()*planets.length);
+    return planets[index];
 }
 
 module.exports.addDestinationInfo = addDestinationInfo;
@@ -86,8 +100,3 @@ module.exports.validateInput = validateInput;
 module.exports.formSubmission = formSubmission;
 module.exports.pickPlanet = pickPlanet; 
 module.exports.myFetch = myFetch;
-
-
-
-
-

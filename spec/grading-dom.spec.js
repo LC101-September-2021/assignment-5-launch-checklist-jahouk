@@ -28,10 +28,6 @@ describe ("GRADING DOM MANIPULATION TEST: ", function () {
 
       const dom = await JSDOM.fromFile(path.resolve(__dirname, "../index.html"), options).then(dom => window = dom.window);
 
-      // let scriptElement = window.document.createElement("script");
-      // scriptElement.textContent = script;
-      // window.document.head.appendChild(scriptElement);
-
       await new Promise (resolve => {
         window.addEventListener('load', resolve);
           container = dom.window.document.body;
@@ -46,6 +42,11 @@ describe ("GRADING DOM MANIPULATION TEST: ", function () {
    });
 
    it ("Function properly validates text", function() {
+     console.log(studentFunctions.validateInput("") === "Empty");
+     console.log(studentFunctions.validateInput("asdf") === "Not a Number");
+     console.log(studentFunctions.validateInput("10") === "Is a Number");
+
+
       expect(studentFunctions.validateInput("")).toEqual("Empty");
       expect(studentFunctions.validateInput("asdf")).toEqual("Not a Number");
       expect(studentFunctions.validateInput("10")).toEqual("Is a Number");
